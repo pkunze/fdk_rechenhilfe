@@ -1,15 +1,22 @@
+from enum import Enum
 import streamlit as st
 
-st.title("Ausschank Preisrechner")
+st.set_page_config(page_title="Ausschank Preisrechner", page_icon="🍺", layout="wide")
+
+class CounterCatergory(Enum):
+    TOP = "Header"
+    NON_ALCOHOL = "Alkoholfreie Getränke 🥤🧃"
+    ALCOHOL = "Getränke ab 16 Jahre 🍺🍷🥂"
 
 class Counter:
     price = 0;
     name = "unknown"
+    category = None
 
-    def __init__(self, name,  price):
+    def __init__(self, name, price):
         self.name = name
         self.price = price
-        if(self.name not in st.session_state):
+        if (self.name not in st.session_state):
             st.session_state[self.name] = 0
 
 
@@ -22,25 +29,32 @@ class Counter:
 
     def sum(self):
         return self.count() * self.price
-    
+
 def reset():
     st.session_state.clear()
-    
-counters = [
-     Counter("🫗 Pfandglas zurück", -2.00),
-     Counter("🍺 Bier", 4.00),
-     Counter("🥤 Cola", 2.00)
-]
 
+total = 0.0
 
-def inc(name):
-    for counter in counters:
-        if counter.name == name:
-            counter.inc()
-            return;
-    st.write(f"Counter {name} not found")
+counters_by_category = {
+    CounterCatergory.TOP: [
+        Counter("Großes Pfandglas zurück", -2.00),
+        Counter("Kleines Pfandglas zurück", -0.50),
+    ],
+    CounterCatergory.NON_ALCOHOL: [
+        Counter("Cola/Fanta/Sprite", 2.00),
+        Counter("Wasser/Saft", 2.00),
+        Counter("Apfelschorle", 2.00),
+        Counter("Rote Brause", 2.50),
+    ],
+    CounterCatergory.ALCOHOL: [
+        Counter("Bier/Radler/Diesel", 5.50),
+        Counter("Glas Wein", 2.50),
+        Counter("Sekt", 3.00),
+        Counter("Bowle", 3.00),
+    ]
+}
 
-st.subheader(f"Aktuelle Summe: **{sum(counter.sum() for counter in counters):.2f}€**")
+all_counters = [counter for category in CounterCatergory for counter in counters_by_category[category]]
 
 st.button("❌ Reset", on_click=reset, use_container_width=True)
 
@@ -48,18 +62,37 @@ col1, col2 = st.columns(2, gap="large")
 
 with col1:
     st.header("Eingabe")
-    st.button("🫗 Pfandglas zurück", type="primary" , use_container_width=True, on_click=lambda:inc("🫗 Pfandglas zurück"))
-    st.button("🍺 Bier", type="primary", use_container_width=True, on_click=lambda:inc("🍺 Bier"))
-    st.button("🥤 Cola", type="primary", use_container_width=True, on_click=lambda:inc("🥤 Cola"))
+
+    top_counters = [counter for counter in counters_by_category[CounterCatergory.TOP]]
+    top_cols = st.columns(len(top_counters))
+    for i in range(len(top_counters)):
+        with top_cols[i]:
+            btn = st.button(top_counters[i].name, type="primary" , use_container_width=True)
+            if (btn):
+                top_counters[i].inc()
+
+    for category in CounterCatergory:
+        if category == CounterCatergory.TOP: continue
+
+        st.subheader(category.value)
+        category_counters = [counter for counter in counters_by_category[category]]
+        category_cols = st.columns(2)
+        for i in range(len(category_counters)):
+            with category_cols[i%2]:
+                btn = st.button(category_counters[i].name, type="secondary" , use_container_width=True)
+                if (btn):
+                    category_counters[i].inc()
 
 with col2:
     st.header("Zusammenfassung")
+    st.subheader(f"Gesamt: **{sum(counter.sum() for counter in all_counters):.2f}€**")
 
-    for counter in counters:
+    data = []
+
+    for counter in all_counters:
         if(counter.count() > 0):
-            st.write(f"{counter.name}: {counter.count()} x {counter.price:.2f}€ = {counter.sum():.2f}€")
+            # st.write(f"{counter.name}: {counter.count()} x {counter.price:.2f}€ = {counter.sum():.2f}€")    
+            data.append({"Posten": counter.name, "Anzahl": counter.count(), "Preis": f"{counter.price:.2f}€", "PostenSumme": f"{counter.sum():.2f}€"})
 
-    "---"
-
-    st.markdown(f"Gesamt: **{sum(counter.sum() for counter in counters):.2f}€**")
-    
+    if(len(data) > 0):
+        st.dataframe(data, use_container_width=True)
