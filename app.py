@@ -56,16 +56,14 @@ all_counters = [counter for category in CounterCatergory for counter in counters
 
 tc, rc = st.columns(2, gap="small")
 
-col1, col2 = st.columns(2, gap="large")
+col1, col2 = st.tabs(["✏️ Eingabe", "💸 Zusammenfassung"])
 
 with col1:
-    st.header("Eingabe")
-
     top_counters = [counter for counter in counters_by_category[CounterCatergory.TOP]]
     top_cols = st.columns(len(top_counters))
     for i in range(len(top_counters)):
         with top_cols[i]:
-            btn = st.button(top_counters[i].name, type="primary" , use_container_width=True)
+            btn = st.button(f"{top_counters[i].name} ({top_counters[i].price:.2f}€)", type="primary" , use_container_width=True)
             if (btn):
                 top_counters[i].inc()
 
@@ -77,13 +75,11 @@ with col1:
         category_cols = st.columns(2)
         for i in range(len(category_counters)):
             with category_cols[i%2]:
-                btn = st.button(category_counters[i].name, type="secondary" , use_container_width=True)
+                btn = st.button(f"{category_counters[i].name} ({category_counters[i].price:.2f}€)", type="secondary" , use_container_width=True)
                 if (btn):
                     category_counters[i].inc()
 
 with col2:
-    st.header("Zusammenfassung")
-
     data = []
 
     for counter in all_counters:
