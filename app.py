@@ -33,8 +33,6 @@ class Counter:
 def reset():
     st.session_state.clear()
 
-total = 0.0
-
 counters_by_category = {
     CounterCatergory.TOP: [
         Counter("Großes Pfandglas zurück", -2.00),
@@ -56,7 +54,7 @@ counters_by_category = {
 
 all_counters = [counter for category in CounterCatergory for counter in counters_by_category[category]]
 
-st.button("❌ Reset", on_click=reset, use_container_width=True)
+tc, rc = st.columns(2, gap="small")
 
 col1, col2 = st.columns(2, gap="large")
 
@@ -85,14 +83,21 @@ with col1:
 
 with col2:
     st.header("Zusammenfassung")
-    st.subheader(f"Gesamt: **{sum(counter.sum() for counter in all_counters):.2f}€**")
 
     data = []
 
     for counter in all_counters:
         if(counter.count() > 0):
-            # st.write(f"{counter.name}: {counter.count()} x {counter.price:.2f}€ = {counter.sum():.2f}€")    
             data.append({"Posten": counter.name, "Anzahl": counter.count(), "Preis": f"{counter.price:.2f}€", "PostenSumme": f"{counter.sum():.2f}€"})
 
     if(len(data) > 0):
         st.dataframe(data, use_container_width=True)
+        st.subheader(f"Gesamt: **{sum(counter.sum() for counter in all_counters):.2f}€**")
+    else:
+        st.subheader("Keine Daten")
+
+with tc:
+    st.subheader(f"Gesamt: **{sum(counter.sum() for counter in all_counters):.2f}€**") 
+
+with rc:
+    st.button("❌ Reset", on_click=reset, use_container_width=True)
