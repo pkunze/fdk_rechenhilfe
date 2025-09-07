@@ -1,6 +1,7 @@
 from enum import Enum
 import streamlit as st
 
+
 st.set_page_config(page_title="Ausschank Preisrechner", page_icon="🍺", layout="wide")
 
 class CounterCatergory(Enum):
@@ -22,6 +23,9 @@ class Counter:
 
     def inc(self):
         st.session_state[self.name] = st.session_state[self.name] + 1
+    
+    def dec(self):
+        st.session_state[self.name] = st.session_state[self.name] - 1
 
     def count(self):
         return st.session_state[self.name]
@@ -63,7 +67,8 @@ with col1:
     top_cols = st.columns(len(top_counters))
     for i in range(len(top_counters)):
         with top_cols[i]:
-            btn = st.button(f"{top_counters[i].name} ({top_counters[i].price:.2f}€)", type="primary" , use_container_width=True)
+            btn = st.button(f"{top_counters[i].name} ({top_counters[i].price:.2f}€)", type="primary" , width='stretch')
+            
             if (btn):
                 top_counters[i].inc()
 
@@ -75,10 +80,25 @@ with col1:
         category_cols = st.columns(2)
         for i in range(len(category_counters)):
             with category_cols[i%2]:
-                btn = st.button(f"{category_counters[i].name} ({category_counters[i].price:.2f}€)", type="secondary" , use_container_width=True)
+                st.text(f"{category_counters[i].name} ({category_counters[i].price:.2f}€)")
+                btn = st.button(
+                "➕", 
+                key=f"{category_counters[i].name}_inc", 
+                width='stretch',
+                type="secondary"
+                )
+
+                dec_btn = st.button(
+                "➖", 
+                key=f"{category_counters[i].name}_dec", 
+                width='stretch',
+                
+                )
                 if (btn):
                     category_counters[i].inc()
 
+                if (dec_btn):
+                    category_counters[i].dec()
 with col2:
     data = []
 
@@ -87,7 +107,7 @@ with col2:
             data.append({"Posten": counter.name, "Anzahl": counter.count(), "Preis": f"{counter.price:.2f}€", "PostenSumme": f"{counter.sum():.2f}€"})
 
     if(len(data) > 0):
-        st.dataframe(data, use_container_width=True)
+        st.dataframe(data, width='stretch')
         st.subheader(f"Gesamt: **{sum(counter.sum() for counter in all_counters):.2f}€**")
     else:
         st.subheader("Keine Daten")
@@ -96,4 +116,4 @@ with tc:
     st.subheader(f"Gesamt: **{sum(counter.sum() for counter in all_counters):.2f}€**") 
 
 with rc:
-    st.button("❌ Reset", on_click=reset, use_container_width=True)
+    st.button("❌ Reset", on_click=reset, width='stretch')
