@@ -1,0 +1,7 @@
+[theme]
+base="dark"
+primaryColor = "red"
+backgroundColor = "black"
+secondaryBackgroundColor ="red"
+textColor ="white"
+baseFontSize=100
