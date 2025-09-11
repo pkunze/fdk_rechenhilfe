@@ -55,77 +55,79 @@ counters_by_category = {
 all_counters = [counter for category in CounterCatergory for counter in counters_by_category[category]]
 
 tc, rc = st.columns(2, gap="small")
+st.divider()
 
-col1, col2 = st.tabs(["✏️ Eingabe", "💸 Zusammenfassung"])
+for category in CounterCatergory:
+    category_counters = [counter for counter in counters_by_category[category]]
+    category_cols = st.columns(2)
+    for i in range(len(category_counters)):
+        with category_cols[i % 2]:
+            product_container = st.container()
+            button_cols = st.columns([0.25, 0.6, 0.25], gap=None, vertical_alignment="center", border=False)
+            with product_container:
+                st.markdown("""
+                    <style>
+                    div.stButton > button {
+                        border: none;                 /* remove border */
+                        outline: none !important;     /* remove focus outline */
+                    }
+                        div.stButton > button:focus {
+                            border: none;
+                            outline: none !important;
+                        }
+                        div.stButton > button:active {
+                            border: none;
+                            outline: none !important;
+                        }
+                    div.stButton > button[kind="primary"] { 
+                        background-color: #00C853; 
+                        color: white;
+                    }
+                    div.stButton > button[kind="secondary"] { 
+                        background-color: #D50000; 
+                        color: white;
+                    }
+                    </style>
+                """, unsafe_allow_html=True)
+                with button_cols[0]:
+                    btn = st.button(
+                        "➕",
+                        key=f"{category_counters[i].name}_inc",
+                        width="stretch",
+                        type="primary"
+                    )
+                    if (btn):
+                        category_counters[i].inc()
 
-with col1:
-    for category in CounterCatergory:
+                with button_cols[2]:
+                    dec_btn = st.button(
+                        "➖",
+                        key=f"{category_counters[i].name}_dec",
+                        width="stretch",
+                        type="secondary"
+                    )
+                    if (dec_btn):
+                        category_counters[i].dec()
+                with button_cols[1]:
 
-        category_counters = [counter for counter in counters_by_category[category]]
-        category_cols = st.columns(2)
-        for i in range(len(category_counters)):
-            with category_cols[i % 2]:
-                product_container = st.container()
-                button_cols = st.columns([0.25, 0.6, 0.25], gap=None, vertical_alignment="center", border=False)
-                with product_container:
-                    with button_cols[0]:
-                        btn = st.button(
-                            "➕",
-                            key=f"{category_counters[i].name}_inc",
-                            width="stretch",
-                            type="secondary"
-                        )
-                        if (btn):
-                            category_counters[i].inc()
+                    counter_product_container = st.container(horizontal=True, gap=None, horizontal_alignment="center")
+                    with counter_product_container:
+                        counter_cols = st.columns([1,6], gap=None, border=False)
 
-                    with button_cols[2]:
-                        dec_btn = st.button(
-                            "➖",
-                            key=f"{category_counters[i].name}_dec",
-                            width="stretch",
-                            type="secondary"
-                        )
-                        if (dec_btn):
-                            category_counters[i].dec()
-                    with button_cols[1]:
-
-                        counter_product_container = st.container(horizontal=True, gap=None, horizontal_alignment="center")
-                        with counter_product_container:
-                            counter_cols = st.columns([1,6], gap=None, border=False)
-
-                            with counter_cols[0]:
-                                if (category_counters[i].count() > 0):
-                                    st.markdown(
-                                        f"<p style='text-align: center'>{category_counters[i].count()}</p>",
-                                        unsafe_allow_html=True
-                                    )
-
-                            with counter_cols[1]:
-                                name = category_counters[i].name
-                                price = category_counters[i].price
+                        with counter_cols[0]:
+                            if (category_counters[i].count() > 0):
                                 st.markdown(
-                                f"<p style='text-align: center'>{name}({price:.2f}€)</p>",
-                                unsafe_allow_html=True
+                                    f"<p style='text-align: center; color: red;'>{category_counters[i].count()}</p>",
+                                    unsafe_allow_html=True
                                 )
 
-
-
-
-
-
-with col2:
-    data = []
-
-    for counter in all_counters:
-        if (counter.count() > 0):
-            data.append({"Posten": counter.name, "Anzahl": counter.count(), "Preis": f"{counter.price:.2f}€",
-                         "PostenSumme": f"{counter.sum():.2f}€"})
-
-    if (len(data) > 0):
-        st.dataframe(data, use_container_width=True)
-        st.subheader(f"Gesamt: **{sum(counter.sum() for counter in all_counters):.2f}€**")
-    else:
-        st.subheader("Keine Daten")
+                        with counter_cols[1]:
+                            name = category_counters[i].name
+                            price = category_counters[i].price
+                            st.markdown(
+                            f"<p style='text-align: center'>{name}({price:.2f}€)</p>",
+                            unsafe_allow_html=True
+                            )
 
 with tc:
     st.subheader(f"Gesamt: **{sum(counter.sum() for counter in all_counters):.2f}€**")
