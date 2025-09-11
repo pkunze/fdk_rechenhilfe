@@ -117,7 +117,7 @@ for category in CounterCatergory:
                         with counter_cols[0]:
                             if (category_counters[i].count() > 0):
                                 st.markdown(
-                                    f"<p style='text-align: center; color: red;'>{category_counters[i].count()}</p>",
+                                    f"<p style='text-align: center; color: #00B0FF ; font-weight: bold; font-size: 30px'>{category_counters[i].count()}</p>",
                                     unsafe_allow_html=True
                                 )
 
