@@ -107,7 +107,7 @@ for category in CounterCatergory:
                         type="secondary"
                     )
                     if (dec_btn):
-                        if (category_counters[i]>=1):
+                        if (category_counters[i].count()>=1):
                             category_counters[i].dec()
                 with button_cols[1]:
 
