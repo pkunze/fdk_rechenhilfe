@@ -107,7 +107,8 @@ for category in CounterCatergory:
                         type="secondary"
                     )
                     if (dec_btn):
-                        category_counters[i].dec()
+                        if (category_counters[i]>=1)
+                            category_counters[i].dec()
                 with button_cols[1]:
 
                     counter_product_container = st.container(horizontal=True, gap=None, horizontal_alignment="center")
