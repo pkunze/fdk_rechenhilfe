@@ -9,7 +9,7 @@ class CounterCatergory(Enum):
     ALCOHOL = "Getränke ab 16 Jahre 🍺🍷🥂"
 
 class Counter:
-    price = 0;
+    price = 0
     name = "unknown"
     category = None
 
