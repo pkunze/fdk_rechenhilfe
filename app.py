@@ -39,16 +39,19 @@ def reset():
 counters_by_category = {
 
     CounterCatergory.DRINKS: [
-        Counter("Großes Pfandglas zurück", -2.00),
-        Counter("Kleines Pfandglas zurück", -0.50),
-        Counter("Cola/Fanta/Sprite", 2.00),
-        Counter("Wasser/Saft", 2.00),
-        Counter("Apfelschorle", 2.00),
-        Counter("Rote Brause", 2.50),
-        Counter("Bier/Radler/Diesel", 5.50),
-        Counter("Glas Wein", 2.50),
-        Counter("Sekt", 3.00),
-        Counter("Bowle", 3.00),
+        Counter("Becher / Glas rück", -3.00),
+        Counter("Flasche rück", -0.50),
+        
+        Counter("Cola/Fanta/Sprite | 0,4 ", 6.00), 
+        Counter("Spezi | 0,4 ", 6),
+        Counter("Bier/Radler/Diesel | 0,4 ", 6.50),
+        Counter("Wasser | 0,4 ", 5.00),
+        Counter("Apfelsaft | 0,2 ",2),
+        Counter("Apfelschorle | 0,4 ", 6.00),
+        Counter("Rote Brause | Flasche ", 3),
+        Counter("Federweißer | 0,2 ", 3),
+        Counter("Sekt/Fruchtsecco | Flasche ", 3.50),
+        
     ],
 }
 
