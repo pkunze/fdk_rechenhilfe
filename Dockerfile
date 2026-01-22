@@ -1,11 +1,8 @@
-FROM python:3-slim
+FROM python:3.13-alpine3.23
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+RUN apk --no-cache add curl
 
 COPY ./app.py ./app.py
 
